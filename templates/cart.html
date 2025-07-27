@@ -1,0 +1,190 @@
+{% extends 'nav.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block css %}
+    <style>
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #total {
+            color: #0004fd;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="card shadow">
+            <h2 class="item_title">购物车</h2>
+            <form method="post">
+                {% csrf_token %}
+                <table class="table table-bordered table-hover" id="myTable" data-toggle="table"
+                       data-pagination="true" data-search="true">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" id="checkAll"> 全选</th>
+                        <th>商品</th>
+                        <th>封面</th>
+                        <th>价格</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="item_{{ item.id }}" value="{{ item.id }}">
+                            </td>
+                            <td class="image-container"><img src="{{ item.product.image.url }}" class="img-fluid"></td>
+                            <td>{{ item.product.name }}</td>
+                            <td>￥{{ item.product.price }}</td>
+                            <td>
+                                <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1"
+                                       class="quantity-input" data-price="{{ item.product.price }}"
+                                       data-id="{{ item.id }}">
+                            </td>
+                            <td class="subtotal" data-id="{{ item.id }}">￥<span
+                                    class="subtotal-value">{{ item.product.price | multiply:item.quantity }}</span></td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button type="button" name="delete" class="btn btn-danger"
+                        onclick="deleteCheckedItems()">删除
+                </button>
+                <button type="submit" name="update" class="btn btn-primary">更新购物车</button>
+                <button type="button" name="checkout" class="btn btn-success" onclick="submitOrder()">提交订单</button>
+                <p class="total mt-3">总计：￥<span id="total">{{ total }}</span></p>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        // 全选或取消全选
+        function toggleCheckboxes(selectAllCheckbox) {
+            var checkboxes = document.querySelectorAll('input[type=checkbox]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = selectAllCheckbox.checked;
+            }
+            updateSubtotal()
+        }
+
+        // 删除选中的商品
+        function deleteCheckedItems() {
+            var checkboxes = document.querySelectorAll('input[type=checkbox]:checked:not(#checkAll)');
+            var form = document.querySelector('form');
+            checkboxes.forEach(function (checkbox) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'delete';
+                input.value = checkbox.value;
+                form.appendChild(input);
+            });
+            form.submit()
+        }
+
+        function updateSubtotal() {
+            var subtotal = 0;
+            $('.quantity-input').each(function () {
+                var quantity = $(this).val();
+                var price = $(this).data('price');
+                var itemSubtotal = quantity * price;
+                $(this).closest('tr').find('.subtotal-value').text(itemSubtotal.toFixed(2));
+                if ($(this).closest('tr').find('input[type="checkbox"]').is(':checked')) {
+                    subtotal += itemSubtotal;
+                }
+
+            });
+            $('#total').text(subtotal.toFixed(2));
+        }
+
+        function quantity_change(){
+            $('.quantity-input').each(function () {
+                var quantity = $(this).val();
+                var productId = $(this).data('id');
+                     // 创建或更新隐藏的数量字段
+                var quantityInput = $(this).closest('tr').find('input[type="hidden"][name^="quantity_"]');
+                if (quantityInput.length === 0) {
+                    quantityInput = $('<input>').attr({
+                        type: 'hidden',
+                        name: 'quantity_' + productId,
+                        value: quantity
+                    }).appendTo($(this).closest('tr'));
+                } else {
+                    quantityInput.val(quantity);
+                }
+            })
+            updateSubtotal()
+        }
+
+        $(document).ready(function () {
+            $('.quantity-input').on('change', quantity_change);
+            // 全选或取消全选
+            $('#checkAll').click(function () {
+                var isChecked = $(this).prop('checked');
+                toggleCheckboxes(this); // 调用toggleCheckboxes函数
+            });
+
+            // 单独的复选框点击事件
+            $('input[type="checkbox"][name^="item_"]').click(function () {
+                updateSubtotal(); // 更新总价
+            });
+
+            // 页面加载时全选所有复选框
+            $('#checkAll').prop('checked', true);
+            toggleCheckboxes($('#checkAll')[0]); // 调用toggleCheckboxes函数以全选
+
+        });
+
+        // 单独的复选框点击事件
+        $('input[type="checkbox"][name^="item_"]').click(function () {
+            // 如果是选中状态，创建一个隐藏的输入字段
+            if ($(this).prop('checked')) {
+
+            } else {
+                // 如果是取消选中状态，移除对应的隐藏输入字段
+                $('input[name="cart_items"][value="' + $(this).val() + '"]').remove();
+            }
+
+            // 更新全选复选框的状态
+            updateCheckAll();
+        });
+
+
+        // 更新全选复选框的状态
+        function updateCheckAll() {
+            var allCheckboxes = $('input[type="checkbox"][name^="item_"]');
+            var allChecked = allCheckboxes.length === allCheckboxes.filter(':checked').length;
+            $('#checkAll').prop('checked', allChecked);
+        }
+
+        // 提交订单
+        function submitOrder() {
+            var checkboxes = document.querySelectorAll('input[type=checkbox]:checked:not(#checkAll)');
+            // 如果为空
+            if (checkboxes.length === 0) {
+                alert('请先勾选需要提交的商品');
+                return;
+            }
+            // 组装需要提交的商品 id
+            var form = document.querySelector('form');
+            checkboxes.forEach(function (checkbox) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'cart_items';
+                input.value = checkbox.value;
+                form.appendChild(input);
+            });
+            if (checkboxes.length > 0) {
+                // 只有当有选中的复选框时才提交表单
+                form.submit();
+            }
+        }
+    </script>
+{% endblock %}

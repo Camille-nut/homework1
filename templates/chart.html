@@ -1,0 +1,232 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-6 card mt-3">
+                <!-- 浏览量排行 -->
+                <div id="viewRankChart" style="width: 600px;height:400px;"></div>
+            </div>
+            <div class="col-md-6 card mt-3">
+                <!-- 下单排行 -->
+                <div id="orderRankChart" style="width: 600px;height:400px;"></div>
+            </div>
+            <div class="col-md-6 card mt-3">
+                <!-- 收藏排行 -->
+                <div id="favoriteRankChart" style="width: 600px;height:400px;"></div>
+            </div>
+            <div class="col-md-6 card mt-3">
+                <!-- 近一周下单占比 -->
+                <div id="orderProportionChart" style="width: 600px;height:400px;"></div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/echarts.min.js' %}" type="text/javascript"></script>
+    <script>
+
+    $(function (){
+        echart1()
+        echart2()
+        echart3()
+        echart4()
+    })
+
+    function echart1(){
+        var viewRankChart = echarts.init(document.getElementById('viewRankChart'));
+        var option = {
+            title: {
+                text: '商品浏览量排行'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {},
+            xAxis: {
+                name: '商品',
+                type: 'category',
+                boundaryGap: true,
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                name: '浏览量',
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} '
+                }
+            },
+            series: [
+                {
+                    name: '浏览量',
+                    type: 'bar',
+                    data: [10, 11, 13, 11, 12, 12, 9],
+                }
+            ]
+        };
+        $.ajax({
+            url: '/echart1',
+            success: function (data) {
+                console.log(data);
+                option.xAxis.data = data.top_products.map(item=> item.name)
+                option.series[0].data = data.top_products.map(item=> item.value)
+                viewRankChart.setOption(option, true);
+            }
+        })
+        //窗口变化更改Chart大小
+        window.addEventListener('resize', function () {
+            viewRankChart.resize()
+
+        })
+    }
+
+    function echart2(){
+        var orderRankChart = echarts.init(document.getElementById('orderRankChart'));
+        var option = {
+            title: {
+                text: '商品下单排行'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {},
+            xAxis: {
+                name: '商品',
+                type: 'category',
+                boundaryGap: true,
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                name: '下单量',
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} '
+                }
+            },
+            series: [
+                {
+                    name: '下单量',
+                    type: 'bar',
+                    data: [10, 11, 13, 11, 12, 12, 9],
+                }
+            ]
+        };
+        $.ajax({
+            url: '/echart2',
+            success: function (data) {
+                console.log(data);
+                option.xAxis.data = data.order_ranks.map(item=> item.name)
+                option.series[0].data = data.order_ranks.map(item=> item.quantity)
+                orderRankChart.setOption(option, true);
+            }
+        })
+        //窗口变化更改Chart大小
+        window.addEventListener('resize', function () {
+            orderRankChart.resize()
+
+        })
+    }
+
+    function echart3(){
+        var favoriteRankChart = echarts.init(document.getElementById('favoriteRankChart'));
+        var option = {
+            title: {
+                text: '商品收藏排行'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {},
+            xAxis: {
+                name: '商品',
+                type: 'category',
+                boundaryGap: true,
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                name: '收藏量',
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} '
+                }
+            },
+            series: [
+                {
+                    name: '收藏量',
+                    type: 'bar',
+                    data: [10, 11, 13, 11, 12, 12, 9],
+                }
+            ]
+        };
+        $.ajax({
+            url: '/echart3',
+            success: function (data) {
+                console.log(data);
+                option.xAxis.data = data.favorite_ranks.map(item=> item.name)
+                option.series[0].data = data.favorite_ranks.map(item=> item.quantity)
+                favoriteRankChart.setOption(option, true);
+            }
+        })
+        //窗口变化更改Chart大小
+        window.addEventListener('resize', function () {
+            favoriteRankChart.resize()
+
+        })
+    }
+
+    function echart4(){
+        var orderProportionChart = echarts.init(document.getElementById('orderProportionChart'));
+        var option = {
+            title: {
+                text: '商品下单数据'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {},
+            xAxis: {
+                name: '日期',
+                type: 'category',
+                boundaryGap: true,
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                name: '下单量',
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} '
+                }
+            },
+            series: [
+                {
+                    name: '下单量',
+                    type: 'line',
+                    data: [10, 11, 13, 11, 12, 12, 9],
+                }
+            ]
+        };
+        $.ajax({
+            url: '/echart4',
+            success: function (data) {
+                console.log(data);
+                option.xAxis.data = data.daily_orders.map(item=> item.date)
+                option.series[0].data = data.daily_orders.map(item=> item.total_orders)
+                orderProportionChart.setOption(option, true);
+            }
+        })
+        //窗口变化更改Chart大小
+        window.addEventListener('resize', function () {
+            orderProportionChart.resize()
+
+        })
+    }
+
+
+
+    </script>
+
+{% endblock %}

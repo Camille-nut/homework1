@@ -1,0 +1,54 @@
+
+{% extends 'nav.html' %}
+
+{% block css %}
+    <style>
+        body {
+            background-image: url('../static/img/demo/bgp.jpg');
+            background-size: cover; /* 确保背景图覆盖整个页面 */
+            background-position: center 1.2px; /* 背景图居中显示 */
+        }
+
+        .account {
+            width: 600px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 50px;
+            padding: 20px 40px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container account">
+    <img class="mb-4 mx-auto d-block" src="../static/img/icon.png" alt="" width="72" height="65">
+    <h1 class="h3 mb-3 fw-normal">请输入账号</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="bd-example">
+            <div class="form-floating mb-3">
+                {{ form.username }}
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                <span style="color: red">{{ form.username.errors.0 }}</span>
+            </div>
+            <div class="form-floating">
+                {{ form.password }}
+                <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                <span style="color: red">{{ form.password.errors.0 }}</span>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                  <button class="btn btn-primary w-100 py-2" type="submit">登 录</button>
+            没有账号？<a href="{% url 'register' %}" style="text-decoration: none">去注册</a>
+            <span style="color: red" id="error">{{ message }}</span>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+{% endblock %}

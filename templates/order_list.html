@@ -1,0 +1,80 @@
+{% extends 'nav.html' %}
+{% load static %}
+{% block css %}
+    <style>
+        .table td, th {
+            text-align: center; /* 水平居中 */
+            vertical-align: middle; /* 垂直居中 */
+        }
+
+        #total {
+            color: #0004fd;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .btn-list a {
+            margin-left: 10px;
+        }
+
+        .item_name {
+            font-size: 34px;
+            font-weight: bold;
+            color: #0b5ed7;
+            border-bottom: 3px solid #c21c1c;
+            padding: 20px auto;
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+    <div class="card shadow">
+        <h2 class="item_title">我的订单</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>订单号</th>
+                <th>日期</th>
+                <th>总价</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.transaction_id }}</td>
+                    <td>{{ order.date_ordered }}</td>
+                    <td>￥{{ order.get_total_cost }}</td>
+                    <td>
+                        {% if order.status == '未支付' %}
+                            <span class="text-danger">{{ order.status }}</span>
+                        {% elif order.status == '已支付' %}
+                            <span class="text-success">{{ order.status }}</span>
+                        {% elif order.status == '已发货' %}
+                            <span class="text-info">{{ order.status }}</span>
+                        {% elif order.status == '已完成' %}
+                            <span class="text-primary">{{ order.status }}</span>
+                        {% elif order.status == '已取消' %}
+                            <span class="text-muted">{{ order.status }}</span>
+                        {% else %}
+                            <span class="text-secondary">{{ order.status }}</span>
+                        {% endif %}
+                    </td>
+                    {% if order.status == '未支付' %}
+
+                        <td class="btn-list"><a href="{% url 'process_payment' order.id %}"
+                                                class="btn btn-success">支付</a><a
+                                href="{% url 'unorder_success' order.id %}" class="btn btn-danger">取消订单</a>
+                            <a href="{% url 'order_detail' order.id %}" class="btn btn-primary">查看详情</a></td>
+                    {% else %}
+                        <td><a href="{% url 'order_detail' order.id %}" class="btn btn-primary">查看详情</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+{% endblock %}

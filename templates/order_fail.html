@@ -1,0 +1,10 @@
+{% extends 'nav.html' %}
+{% load static %}
+{% block content %}
+    <div class="container mt-3">
+        <div class="row card shadow">
+            <h2>{{ title }}</h2>
+            <a class="btn btn-primary" href="{% url 'cart' %}">返回购物车</a>
+        </div>
+    </div>
+{% endblock %}

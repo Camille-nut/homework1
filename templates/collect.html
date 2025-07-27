@@ -1,0 +1,61 @@
+{% extends 'nav.html' %}
+{% load static %}
+{% block css %}
+    <style>
+        .table td, th {
+            text-align: center; /* 水平居中 */
+            vertical-align: middle; /* 垂直居中 */
+        }
+
+        #total {
+            color: #0004fd;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .btn-list a {
+            margin-left: 10px;
+        }
+
+        .item_name {
+            font-size: 34px;
+            font-weight: bold;
+            color: #0b5ed7;
+            border-bottom: 3px solid #c21c1c;
+            padding: 20px auto;
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+    <div class="card shadow">
+        <h2 class="item_title">我的订单</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>外卖封面</th>
+                <th>外卖名称</th>
+                <th>外卖分类</th>
+                <th>外卖价格</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in favorites %}
+                <tr>
+                    <td class="center" style="height: 100px;height: 200px;">
+                        <img src="{% if order.product.image %}/media/{{ order.product.image }}{% else %}/static/images/default-avatar.png{% endif %}" alt="Animal Image" style="width: 80%; height: 100%; object-fit: cover;">
+                    </td>
+                    <td>{{ order.product.name }}</td>
+                    <td>{{ order.product.category.name }}</td>
+                    <td>{{ order.product.price }}</td>
+                    <td><a target="__blank" href="product/detail/{{order.product.id }}" class="btn btn-primary">查看详情</a></td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+{% endblock %}

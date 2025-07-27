@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="utf-8"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>校园外卖系统</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+          name='viewport'/>
+
+    <!-- Main CSS -->
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+{#    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet"#}
+{#          crossorigin="anonymous">#}
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-5.3.3-dist/css/bootstrap.css' %}">
+    <style>
+        .item_title {
+            font-size: 1.25rem; /* 20px */
+            color: #FFFFFF!important;
+            font-weight: bold;
+            margin-bottom: 1rem; /* 16px */
+            background: #00d0ff;
+            padding: 10px 20px;
+        }
+
+        .card {
+            padding: 20px;
+        }
+
+        .image-container {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+        }
+
+        .table td, th {
+            text-align: center; /* 水平居中 */
+            vertical-align: middle; /* 垂直居中 */
+        }
+
+        .navbar {
+            background: #4C97EA !important;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+
+        }
+
+        .navbar-nav .nav-item:hover .nav-link {
+            color: #00ff15 !important;
+        }
+
+        .navbar-nav .nav-item.active .nav-link {
+            color: #00ff15 !important;
+            border-bottom: 3px solid orange; /* 橘色下边框 */
+        }
+
+        .item_title {
+            font-size: 24px; /* 字体大小 */
+            color: #4A4A4A; /* 字体颜色 */
+            font-weight: bold; /* 字体加粗 */
+            margin: 20px 0; /* 上下边距 */
+            position: relative; /* 相对定位，用于添加装饰元素 */
+        }
+
+        .item_title::before {
+            content: ''; /* 这是一个伪元素，需要内容属性 */
+            position: absolute; /* 绝对定位 */
+            bottom: -4px; /* 底部偏移，使其位于标题下方 */
+            left: 0; /* 左侧对齐 */
+            width: 100%; /* 宽度100% */
+            height: 4px; /* 高度为4px */
+            border-radius: 2px; /* 圆角边框 */
+            background-color: #F5F5F5; /* ���色背景 */
+        }
+
+        @keyframes flashing-gradient {
+            0% {
+                background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
+            }
+            50% {
+                background-image: linear-gradient(45deg, #fad0c4 0%, #ff9a9e 99%);
+            }
+            100% {
+                background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
+            }
+        }
+
+        .carousel-inner img{
+            height: 400px;
+            width: 100%;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        /* 添加一个空的 div 并设置底部边距 */
+        .push {
+            height: 80px; /* 与 footer 高度相同 */
+        }
+    </style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+<!--------------------------------------
+NAVBAR
+--------------------------------------->
+<nav class="topnav navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}"><strong style="font-size: 24px; /* 根据需要调整字体大小 */
+            color: transparent; /* 使字体颜色透明，以便看到背景渐变 */
+            -webkit-background-clip: text; /* 背景剪切，仅适用于 WebKit 浏览器 */
+            background-clip: text;
+            animation: flashing-gradient 3s infinite;">校园外卖系统</strong></a>
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor02"
+                aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbarColor02 navbarNavDropdown" style="">
+            <ul class="navbar-nav mr-auto d-flex align-items-center">
+                <li class="nav-item {% if 'index' in request.path %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'index' %}"><i class="fa-classic fa-solid fa-house fa-fw"></i>&nbsp;首页 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item {% if 'hot' in request.path %} active {% endif %}">
+                        <a class="nav-link" href="{% url 'hot' %}"><i class="fa-classic fa-solid fa-fire fa-fw"></i>&nbsp热门</a>
+                    </li>
+             <li class="nav-item {% if 'recommend' in request.path %} active {% endif %}">
+                        <a class="nav-link" href="{% url 'recommend' %}"><i
+                            class="fa-classic fa-solid fa-text-height fa-fw"></i>&nbsp推荐</a>
+                    </li>
+                <li class="nav-item {% if 'collect' in request.path %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'collect' %}"><i
+                            class="fa-classic fa-solid fa-folder-open fa-fw"></i>&nbsp我的收藏</a>
+                </li>
+                <li class="nav-item {% if 'cart' in request.path %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'cart' %}"><i class="fa-classic fa-solid fa-cart-shopping fa-fw"></i>&nbsp我的购物车</a>
+                </li>
+
+                <li class="nav-item {% if 'order' in request.path %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'order_list' %}"><i class="fa-brands fa-shopify fa-fw"></i>&nbsp我的订单</a>
+                </li>
+                <li class="nav-item {% if 'chart' in request.path %} active {% endif %}">
+                    <a class="nav-link" href="{% url 'today_chart' %}"><i class="fa-classic fa-solid fa-database fa-fw">&nbsp</i>今日数据</a>
+                    </li>
+            </ul>
+            <ul class="navbar-expand-lg navbar-nav ml-auto d-flex align-items-center">
+                {% if not user.is_authenticated %}
+                    <li class="nav-item highlight" style="background:#ffffff;">
+                        <a class="nav-link" href="{% url 'login' %}">登 录</a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="dropdown nav-item highlight" style="margin-left: 10px;background:#ffffff;">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            {% if user.username %} {{ user.username }} {% else %} 用户  {% endif %}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'profile_update' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-person" viewBox="0 0 16 16">
+                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                                </svg>
+                                个人资料</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'password_change' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd"
+                                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                </svg>
+                                修改密码</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                </svg>
+                                注销</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!--------------------------------------
+轮播图
+--------------------------------------->
+{% if 'index' in request.path or 'hot' in request.path %}
+{% include 'swpier.html' %}
+{% endif %}
+<!-- End Navbar -->
+<div>
+    {% block content %}{% endblock %}
+</div>
+
+<!-- 在 footer 之前添加一个空的 div -->
+    <div class="push"></div>
+<!--------------------------------------
+FOOTER
+--------------------------------------->
+<!--
+<div class="container footer mt-5"
+     style="background:#171347!important;display: flex;justify-content: center;align-items: center">
+    <footer class="bg-white border-top p-3 text-align small" style="background:#171347!important;">
+        <div class="row align-items-center justify-content-between" style="color: #ffffff">
+            <div class="align-items-center justify-content-center">
+                <span class="navbar-brand mr-2"><strong>校园外卖系统</strong></span> Copyright &copy;
+                <script>document.write(new Date().getFullYear())</script>
+                . All rights reserved.
+            </div>
+            <div class="align-items-center justify-content-center">
+                Made with <a target="_blank" class="text-secondary font-weight-bold" href="https://waimai.meituan.com/"
+                             style="color: #ffffff!important;">美团外卖</a> by Tql
+            </div>
+        </div>
+    </footer>
+</div>
+
+-->
+<!--------------------------------------
+JAVASCRIPTS
+--------------------------------------->
+<script src="{% static 'js/vendor/jquery.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/vendor/popper.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/vendor/bootstrap.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/functions.js' %}" type="text/javascript"></script>
+{#<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>#}
+<script src="{% static 'plugins/bootstrap-5.3.3-dist/js/bootstrap.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-5.3.3-dist/js/bootstrap.bundle.js' %}"></script>
+
+<script>
+    // 等待 DOM 完全加载
+
+</script>
+
+{% block js %}{% endblock %}
+</body>
+</html>
