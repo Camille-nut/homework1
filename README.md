@@ -95,3 +95,8 @@ npm run build
 npm install -g serve
 serve -s dist
  ```
+### 界面演示
+![首页截图](e1e6141cfb67f6f87ea2f7971e96e344.jpg)
+![点单界面](74f3448a9edae4903fd1866e35b01063.jpg)
+![点单界面](19440d48133c4721fd2f8aa9c990ecaf.jpg)
+![后台登陆](ff832562db32f95b96455665255444ad.jpg)
