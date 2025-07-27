@@ -54,29 +54,44 @@
 2. 安装依赖：  
    ```bash
    pip install -r requirements.txt
-
+```
 3. 配置 MySQL 5.7 数据库：
 
-```sql
+   ```sql
 CREATE DATABASE shop DEFAULT CHARSET utf8mb4;
-
+```
 导入数据：
   ```sql
   mysql> use shop;
   mysql> source delivery.sql;
-
+```
 启动服务：
   ```bash
   python manage.py runserver
-
-
-前端部署
-安装 Node.js 16.14
-安装依赖：
+```
+### 前端部署
+1. 安装 Node.js 环境：
   ```bash
-  npm install
+nvm install 16.14
+nvm use 16.14
+```
 
+2. 进入项目目录并安装依赖：
+```bash
+cd web
+npm install
+```
 
-运行项目：
-  ```bash
-  npm run dev
+3. 开发模式运行：
+```bash
+npm run dev
+```
+4. 生产环境构建：
+```bash
+npm run build
+```
+5. 本地预览生产版本：
+ ```bash
+npm install -g serve
+serve -s dist
+ ```
